@@ -1,5 +1,6 @@
 import streamlit as st
 from standings import ViewStanding
+from about_f1 import display_about_f1
 import requests
 from datetime import datetime
 
@@ -164,7 +165,7 @@ def home_page():
             # Increment the column counter and reset if necessary
             col_counter += 1
             if col_counter >= num_columns:
-                col_counter = 0  # Reset to the first column after filling
+                col_counter = 0  
 
     else:
         st.write("No upcoming races found.")
@@ -173,15 +174,6 @@ def home_page():
     st.markdown("---")
     st.markdown("<div class='footer'>&#169; 2024 F1 Data Project. All Rights Reserved.</div>", unsafe_allow_html=True)
 
-def about_page():
-    st.title("About Formula 1")
-    st.markdown("""
-        Formula 1, also known as F1, is the highest class of single-seater auto racing 
-        sanctioned by the Fédération Internationale de l'Automobile (FIA). 
-        The F1 season consists of a series of races, known as Grands Prix, which are held 
-        on closed circuit tracks and public roads. 
-        F1 has a rich history and is known for its advanced technology and speed.
-    """)
 
 def track_info_page():
     st.title("Track Information")
@@ -204,12 +196,6 @@ def predictions_page():
         Use statistical models and machine learning for insights.
     """)
 
-def standings_page():
-    try:
-        ViewStanding()  
-    except Exception as e:
-        st.error(f"An error occurred while fetching standings: {e}")
-
 def analysis_page():
     st.title("Race Analysis")
     st.markdown("""
@@ -227,8 +213,8 @@ def contact_page():
 # Render content based on selected page
 if st.session_state.selected_page == "home":
     home_page()
-elif st.session_state.selected_page == "about":
-    about_page()
+elif st.session_state.selected_page == "about_f1":
+    display_about_f1()
 elif st.session_state.selected_page == "track_info":
     track_info_page()
 elif st.session_state.selected_page == "drivers_teams":
@@ -236,7 +222,7 @@ elif st.session_state.selected_page == "drivers_teams":
 elif st.session_state.selected_page == "predictions":
     predictions_page()
 elif st.session_state.selected_page == "standings":
-    standings_page()
+    ViewStanding()
 elif st.session_state.selected_page == "analysis":
     analysis_page()
 elif st.session_state.selected_page == "contact":

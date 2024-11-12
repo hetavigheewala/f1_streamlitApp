@@ -11,7 +11,7 @@ path_to_team_logos = "asset/path_to_team_logos"
 def load_image(file_path, size=(45, 25)):
     try:
         img = Image.open(file_path)
-        img = img.resize(size)  # Resize to a consistent size
+        img = img.resize(size)  
         return img
     except FileNotFoundError:
         return None
@@ -19,7 +19,7 @@ def load_image(file_path, size=(45, 25)):
 def load_F1_image(file_path, size=(350, 155)):
     try:
         img = Image.open(file_path)
-        img = img.resize(size)  # Resize to a consistent size
+        img = img.resize(size)  
         return img
     except FileNotFoundError:
         return None
@@ -27,7 +27,7 @@ def load_F1_image(file_path, size=(350, 155)):
 def load_team_image(file_path, size=(40, 40)):
     try:
         img = Image.open(file_path)
-        img = img.resize(size)  # Resize to a consistent size
+        img = img.resize(size)  
         return img
     except FileNotFoundError:
         return None
@@ -88,7 +88,7 @@ def ViewStanding():
         driver_standings = response.json()["MRData"]["StandingsTable"]["StandingsLists"][0]["DriverStandings"]
 
         # Display columns for headers
-        header_cols = st.columns([2, 1, 5, 2, 1])  # Adjust widths as needed
+        header_cols = st.columns([2, 1, 5, 2, 1])  
 
         # Set headers in each column
         with header_cols[0]:
@@ -117,7 +117,7 @@ def ViewStanding():
             flag_image = load_image(flag_file)
 
             # Display each row with flag image and details
-            cols = st.columns([2, 1, 5, 2, 1])  # Adjust widths as needed
+            cols = st.columns([2, 1, 5, 2, 1]) 
             with cols[0]:
                 st.markdown(f"<div class='ranking'>{rank}</div>", unsafe_allow_html=True)
             with cols[1]:
@@ -142,7 +142,7 @@ def ViewStanding():
     if response.status_code == 200:
         constructor_standings = response.json()["MRData"]["StandingsTable"]["StandingsLists"][0]["ConstructorStandings"]
 
-        header_cols = st.columns([2, 1, 5, 2, 1])  # Adjust widths as needed
+        header_cols = st.columns([2, 1, 5, 2, 1])  
 
         # Set headers in each column
         with header_cols[0]:
@@ -170,7 +170,7 @@ def ViewStanding():
             team_logo = load_team_image(logo_file)
 
             # Display each row with logo image and details
-            cols = st.columns([2, 1, 5, 2, 1])  # Adjust widths as needed
+            cols = st.columns([2, 1, 5, 2, 1])  
             with cols[0]:
                 st.markdown(f"<div class='ranking'>{rank}</div>", unsafe_allow_html=True)
             with cols[1]:
