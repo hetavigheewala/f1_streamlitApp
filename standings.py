@@ -82,7 +82,7 @@ def ViewStanding():
     st.markdown("<h2 class='subtitle'>Drivers Standings</h2>", unsafe_allow_html=True)
 
     # Driver Standings Section
-    driver_standings_url = 'https://ergast.com/api/f1/2025/driverStandings.json'
+    driver_standings_url = 'http://ergast.com/api/f1/current/driverStandings.json'
     response = requests.get(driver_standings_url)
     if response.status_code == 200:
         driver_standings = response.json()["MRData"]["StandingsTable"]["StandingsLists"][0]["DriverStandings"]
@@ -137,7 +137,7 @@ def ViewStanding():
     # Constructor Standings Section
     st.markdown("<h2 class='subtitle'>Constructor Standings</h2>", unsafe_allow_html=True)
 
-    constructor_standings_url = 'https://ergast.com/api/f1/2025/constructorStandings.json'
+    constructor_standings_url = 'http://ergast.com/api/f1/current/constructorStandings.json'
     response = requests.get(constructor_standings_url)
     if response.status_code == 200:
         constructor_standings = response.json()["MRData"]["StandingsTable"]["StandingsLists"][0]["ConstructorStandings"]
