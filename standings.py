@@ -1,13 +1,17 @@
 import streamlit as st
-import requests
+import pandas as pd
 from PIL import Image
+from dataBank import driversStandingsDf
 import os
 
-# Define paths to flag and team logo directories
-path_to_flags = "asset/path_to_flags"
-path_to_team_logos = "asset/path_to_team_logos"
+# Paths to data files
+seasons_file = 'data/seasons.csv'
+races_file = 'data/races.csv'
+results_file = 'data/results.csv'
+driver_standings_file = 'data/driver_standings.csv'
+drivers_file = 'data/drivers.csv'
 
-# Function to load images safely and resize them to a standard size
+# Utility functions for loading images
 def load_image(file_path, size=(45, 25)):
     try:
         img = Image.open(file_path)
@@ -32,6 +36,70 @@ def load_team_image(file_path, size=(40, 40)):
     except FileNotFoundError:
         return None
 
+# Function to display driver standings
+def display_driver_standings(selected_driver_standings, selected_drivers):
+    selected_driver_standings = selected_driver_standings.merge(
+        selected_drivers, on='driverId', how='inner'
+    )
+    selected_driver_standings['Driver Full Name'] = selected_driver_standings['forename'] + " " + selected_driver_standings['surname']
+    selected_driver_standings = selected_driver_standings.sort_values(by='position')
+
+    # Display standings with new header format
+    st.markdown("<h2 class='subtitle'>Driver Standings</h2>", unsafe_allow_html=True)
+
+    # Custom header layout
+    header_cols = st.columns([2, 1, 5, 2, 1])  # Adjusted for a neat layout
+    with header_cols[0]:
+        st.markdown("<div class='header'>Rank</div>", unsafe_allow_html=True)
+    with header_cols[1]:
+        st.markdown("<div class='header'>Flag</div>", unsafe_allow_html=True)
+    with header_cols[2]:
+        st.markdown("<div class='header'>Name</div>", unsafe_allow_html=True)
+    with header_cols[3]:
+        st.markdown("<div class='header'>Points</div>", unsafe_allow_html=True)
+    with header_cols[4]:
+        st.markdown("<div class='header'>Wins</div>", unsafe_allow_html=True)
+
+    st.markdown("<div class='divider'></div>", unsafe_allow_html=True)  # Horizontal line divider
+
+    # Display driver standings with image and details
+    for _, row in selected_driver_standings.iterrows():
+        driver_name = row['Driver Full Name']
+        nationality = row['nationality']
+        rank = row['position']
+        points = round(row['points'])  # Round points to nearest integer
+        wins = row['wins']
+
+        # Load nationality flag
+        flag_file = os.path.join("asset/path_to_flags", f"{nationality}.png")
+        flag_image = load_image(flag_file)
+
+        # Display each row with flag image and details
+        cols = st.columns([2, 1, 5, 2, 1])  # Adjusted for a neat layout
+        with cols[0]:
+            st.markdown(f"<div class='ranking'>{rank}</div>", unsafe_allow_html=True)
+        with cols[1]:
+            if flag_image:
+                st.image(flag_image)
+        with cols[2]:
+            st.markdown(f"<div class='name'>{driver_name}</div>", unsafe_allow_html=True)
+        with cols[3]:
+            st.markdown(f"<div class='points'>{points}</div>", unsafe_allow_html=True)
+        with cols[4]:
+            st.markdown(f"<div class='wins'>{wins}</div>", unsafe_allow_html=True)
+        st.markdown("<div class='divider'></div>", unsafe_allow_html=True)  # Divider between entries
+
+# Function to display constructor standings
+def display_constructor_standings(selected_constructor_standings):
+    st.markdown("<h2 class='subtitle'>Constructor Standings</h2>", unsafe_allow_html=True)
+    # Constructor standings can be added similarly, using the same approach as driver standings.
+    # Example placeholder for constructor standings implementation
+    for _, row in selected_constructor_standings.iterrows():
+        constructor_name = row['name']
+        points = round(row['points'])  # Round points to nearest integer
+        st.markdown(f"<div class='ranking'>{constructor_name} - Points: {points}</div>", unsafe_allow_html=True)
+
+# Main function to display standings
 def ViewStanding():
     # Set F1 theme styles
     st.markdown(
@@ -79,110 +147,19 @@ def ViewStanding():
 
     st.markdown("<br>", unsafe_allow_html=True)  # Adds two new lines
 
-    st.markdown("<h2 class='subtitle'>Drivers Standings</h2>", unsafe_allow_html=True)
+    # Load available years
+    seasons_data = pd.read_csv(seasons_file)
+    years = seasons_data['year'].unique()
 
-    # Driver Standings Section
-    driver_standings_url = 'http://ergast.com/api/f1/current/driverStandings.json'
-    response = requests.get(driver_standings_url)
-    if response.status_code == 200:
-        driver_standings = response.json()["MRData"]["StandingsTable"]["StandingsLists"][0]["DriverStandings"]
+    # Dropdown for year selection
+    selected_year = st.selectbox("Select Year", options=sorted(years, reverse=True))
 
-        # Display columns for headers
-        header_cols = st.columns([2, 1, 5, 2, 1])  
+    # get the drivers data and display it
+    selected_driver_standings, selected_drivers = driversStandingsDf(selected_year)
+    display_driver_standings(selected_driver_standings, selected_drivers)
 
-        # Set headers in each column
-        with header_cols[0]:
-            st.markdown("<div class='header'>Rank</div>", unsafe_allow_html=True)
-        with header_cols[1]:
-            st.markdown("<div class='header'>Flag</div>", unsafe_allow_html=True)
-        with header_cols[2]:
-            st.markdown("<div class='header'>Name</div>", unsafe_allow_html=True)
-        with header_cols[3]:
-            st.markdown("<div class='header'>Points</div>", unsafe_allow_html=True)
-        with header_cols[4]:
-            st.markdown("<div class='header'>Wins</div>", unsafe_allow_html=True)
+    # Constructor standings placeholder 
 
-        st.markdown("<div class='divider'></div>", unsafe_allow_html=True)  # Horizontal line divider
-
-        # Display driver standings with images and text layout
-        for driver in driver_standings:
-            driver_name = f"{driver['Driver']['givenName']} {driver['Driver']['familyName']}"
-            nationality = driver['Driver']['nationality']
-            rank = driver["position"]
-            points = driver["points"]
-            wins = driver.get("wins", 0)
-
-            # Load nationality flag
-            flag_file = os.path.join(path_to_flags, f"{nationality}.png")
-            flag_image = load_image(flag_file)
-
-            # Display each row with flag image and details
-            cols = st.columns([2, 1, 5, 2, 1]) 
-            with cols[0]:
-                st.markdown(f"<div class='ranking'>{rank}</div>", unsafe_allow_html=True)
-            with cols[1]:
-                if flag_image:
-                    st.image(flag_image)
-            with cols[2]:
-                st.markdown(f"<div class='name'>{driver_name}</div>", unsafe_allow_html=True)
-            with cols[3]:
-                st.markdown(f"<div class='points'>{points}</div>", unsafe_allow_html=True)
-            with cols[4]:
-                st.markdown(f"<div class='wins'>{wins}</div>", unsafe_allow_html=True)
-            st.markdown("<div class='divider'></div>", unsafe_allow_html=True)  # Divider between entries
-
-    else:
-        st.write("Error fetching driver standings")
-
-    # Constructor Standings Section
-    st.markdown("<h2 class='subtitle'>Constructor Standings</h2>", unsafe_allow_html=True)
-
-    constructor_standings_url = 'http://ergast.com/api/f1/current/constructorStandings.json'
-    response = requests.get(constructor_standings_url)
-    if response.status_code == 200:
-        constructor_standings = response.json()["MRData"]["StandingsTable"]["StandingsLists"][0]["ConstructorStandings"]
-
-        header_cols = st.columns([2, 1, 5, 2, 1])  
-
-        # Set headers in each column
-        with header_cols[0]:
-            st.markdown("<div class='header'>Rank</div>", unsafe_allow_html=True)
-        with header_cols[1]:
-            st.markdown("<div class='header'>Logo</div>", unsafe_allow_html=True)
-        with header_cols[2]:
-            st.markdown("<div class='header'>Name</div>", unsafe_allow_html=True)
-        with header_cols[3]:
-            st.markdown("<div class='header'>Points</div>", unsafe_allow_html=True)
-        with header_cols[4]:
-            st.markdown("<div class='header'>Wins</div>", unsafe_allow_html=True)
-
-        st.markdown("<div class='divider'></div>", unsafe_allow_html=True)  # Horizontal line divider
-
-        # Display constructor standings with images and text layout
-        for constructor in constructor_standings:
-            team_name = constructor["Constructor"]["name"]
-            rank = constructor["position"]
-            points = constructor["points"]
-            wins = constructor.get("wins", 0)
-
-            # Load team logo
-            logo_file = os.path.join(path_to_team_logos, f"{team_name.replace(' ', '_').lower()}.png")
-            team_logo = load_team_image(logo_file)
-
-            # Display each row with logo image and details
-            cols = st.columns([2, 1, 5, 2, 1])  
-            with cols[0]:
-                st.markdown(f"<div class='ranking'>{rank}</div>", unsafe_allow_html=True)
-            with cols[1]:
-                if team_logo:
-                    st.image(team_logo)
-            with cols[2]:
-                st.markdown(f"<div class='name'>{team_name}</div>", unsafe_allow_html=True)
-            with cols[3]:
-                st.markdown(f"<div class='points'>{points}</div>", unsafe_allow_html=True)
-            with cols[4]:
-                st.markdown(f"<div class='wins'>{wins}</div>", unsafe_allow_html=True)
-            st.markdown("<div class='divider'></div>", unsafe_allow_html=True)  # Divider between entries
 
 # Run the function if this script is executed directly
 if __name__ == "__main__":
