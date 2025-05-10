@@ -3,6 +3,7 @@ import requests
 from about_f1 import display_about_f1
 from about_driver import driver_info
 from about_constructor import constructors_info
+from about_circuit import circuit_info
 from standings import ViewStanding
 from datetime import datetime
 
@@ -80,7 +81,7 @@ sidebar_buttons = [
     "Track Info",
     "Constructors",
     "Drivers",
-    "Race Calendar",
+    "Circuit",
     "Predictions",
     "Standings",
     "Analysis",
@@ -134,6 +135,11 @@ def drivers():
         Explore the profiles of drivers, including their histories, statistics, 
         and achievements throughout the seasons.
     """)
+    
+def circuitInfo():
+    st.markdown("<h1 style='color: red;'>Circuit</h1>", unsafe_allow_html=True)
+
+
 def predictions_page():
     st.markdown("<h1 style='color: red;'>Race Predictions</h1>", unsafe_allow_html=True)
     st.markdown("""
@@ -166,6 +172,8 @@ elif st.session_state.selected_page == "constructors":
     constructors_info()
 elif st.session_state.selected_page == "drivers":
     driver_info()
+elif st.session_state.selected_page == "circuit":
+    circuit_info()
 elif st.session_state.selected_page == "predictions":
     predictions_page()
 elif st.session_state.selected_page == "standings":
