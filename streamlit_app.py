@@ -78,13 +78,15 @@ st.sidebar.markdown("<h2 style='text-align: center; color: #FF1E00;font-size: 1.
 sidebar_buttons = [
     "Home",
     "About F1",
-    "Track Info",
-    "Constructors",
     "Drivers",
+    "Constructors",
     "Circuit",
-    "Predictions",
     "Standings",
-    "Analysis",
+    "Driver Analysis",
+    "Constructor Analysis",
+    "Circuit Analysis",
+    "Race Analysis",
+    "Predictions",
     "Contact"
 ]
 
@@ -112,32 +114,20 @@ def home_page():
 
     # Footer
     st.markdown("---")
-    st.markdown("<div class='footer'>&#169; 2024 F1 Data Project. All Rights Reserved.</div>", unsafe_allow_html=True)
+    st.markdown("<div class='footer'>&#169; 2024 F1 Data Project. All Rights and Wrong Reserved.</div>", unsafe_allow_html=True)
 
 
-def track_info_page():
-    st.markdown("<h1 style='color: red;'>Track Information</h1>", unsafe_allow_html=True)
-    st.markdown("""
-        Here you can find detailed information about various F1 tracks, including 
-        their characteristics, history, and notable events.
-    """)
+def driver_analysis_page():
+    st.markdown("<h1 style='color: red;'>Driver Analysis</h1>", unsafe_allow_html=True)
 
-def constructors():
-    st.markdown("<h1 style='color: red;'>Constructors</h1>", unsafe_allow_html=True)
-    st.markdown("""
-        Explore the profiles of constructors, including their histories, statistics, 
-        and achievements throughout the seasons.
-    """)
+def constructor_analysis_page():
+    st.markdown("<h1 style='color: red;'>Constructor Analysis</h1>", unsafe_allow_html=True)
 
-def drivers():
-    st.markdown("<h1 style='color: red;'>Drivers</h1>", unsafe_allow_html=True)
-    st.markdown("""
-        Explore the profiles of drivers, including their histories, statistics, 
-        and achievements throughout the seasons.
-    """)
-    
-def circuitInfo():
-    st.markdown("<h1 style='color: red;'>Circuit</h1>", unsafe_allow_html=True)
+def circuit_analysis_page():
+    st.markdown("<h1 style='color: red;'>Circuit Analysis</h1>", unsafe_allow_html=True)
+
+def race_analysis_page():
+    st.markdown("<h1 style='color: red;'>Race Analysis</h1>", unsafe_allow_html=True)
 
 
 def predictions_page():
@@ -145,13 +135,6 @@ def predictions_page():
     st.markdown("""
         Analyze data to make predictions about upcoming races, drivers, and team performance. 
         Use statistical models and machine learning for insights.
-    """)
-
-def analysis_page():
-    st.markdown("<h1 style='color: red;'>Race Analysis</h1>", unsafe_allow_html=True)
-    st.markdown("""
-        Dive deep into race analyses, including lap times, pit stops, and team strategies. 
-        Understand the factors that influence race outcomes.
     """)
 
 def contact_page():
@@ -166,19 +149,23 @@ if st.session_state.selected_page == "home":
     home_page()
 elif st.session_state.selected_page == "about_f1":
     display_about_f1()
-elif st.session_state.selected_page == "track_info":
-    track_info_page()
-elif st.session_state.selected_page == "constructors":
-    constructors_info()
 elif st.session_state.selected_page == "drivers":
     driver_info()
+elif st.session_state.selected_page == "constructors":
+    constructors_info()
 elif st.session_state.selected_page == "circuit":
     circuit_info()
-elif st.session_state.selected_page == "predictions":
-    predictions_page()
 elif st.session_state.selected_page == "standings":
     ViewStanding()
-elif st.session_state.selected_page == "analysis":
-    analysis_page()
+elif st.session_state.selected_page == "driver_analysis":
+    driver_analysis_page()
+elif st.session_state.selected_page == "constructor_analysis":
+    constructor_analysis_page() 
+elif st.session_state.selected_page == "circuit_analysis":
+    circuit_analysis_page()
+elif st.session_state.selected_page == "race_analysis":
+    race_analysis_page()
+elif st.session_state.selected_page == "predictions":
+    predictions_page()
 elif st.session_state.selected_page == "contact":
     contact_page()

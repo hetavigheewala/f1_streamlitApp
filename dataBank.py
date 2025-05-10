@@ -20,15 +20,20 @@ def driversStandingsDf(year):
     last_race_id = selected_races.loc[selected_races['round'].idxmax(), 'raceId']
     selected_driver_standings = driver_standings_data[driver_standings_data['raceId'] == last_race_id]
     selected_drivers = drivers_data[drivers_data['driverId'].isin(selected_driver_standings['driverId'])]
-    
-    # Merge driver standings with driver details
-    drivers_standings_df = selected_driver_standings.merge(
-        selected_drivers, on='driverId', how='inner'
-    )
-    drivers_standings_df['Driver Full Name'] = drivers_standings_df['forename'] + " " + drivers_standings_df['surname']
-    drivers_standings_df = drivers_standings_df.sort_values(by='position')
-    
+
     return selected_driver_standings, selected_drivers
+
+def constructorStandingsDf(year):
+    races_data = pd.read_csv(races_file)
+    constructors_standings_data = pd.read_csv(constructors_standings_file)
+    constructors_data = pd.read_csv(constructors_file)
+    selected_races = races_data[races_data['year'] == year]
+    last_race_id = selected_races.loc[selected_races['round'].idxmax(), 'raceId']
+    selected_constructors_standings = constructors_standings_data[constructors_standings_data['raceId'] == last_race_id]
+    selected_constructors = constructors_data[constructors_data['constructorId'].isin(selected_constructors_standings['constructorId'])]
+    
+    return selected_constructors_standings, selected_constructors
+
 
 
 def world_driver_championship_df():
