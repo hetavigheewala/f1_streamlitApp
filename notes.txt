@@ -1,0 +1,20 @@
+
+    
+    
+    
+    # driver Data  = 
+    # from the selected_drivers data frame (selected_drivers), greate another data frame called driver info, which will have the Driver Name | Driver Code | Driver Number | Date Of Birth | Nationality | Podiums | Wins | More Information | Races Started | Races Finished | Retierd | Disqualified 
+    # Driver Name = column 'forename' from selected_drivers data frame + the column 'surname' from selected_drivers data frame.
+    # Driver Code = column 'code' from selected_drivers data frame
+    # Driver Number  = column 'number' from selected_driversdata frame
+    # Date Of Birth = column 'dob' from selected_drivers data frame
+    # More Information = column 'url from selected_drivers data frame
+    # results data frame  = results_data
+    # Podiums = for each diverId (filter result data by the driverId, then count(the number of times the value in 'positionText' = 1 or 2 or 3))
+    # Wins = for each diverId (filter result data by the driverId, then count(the number of times the value in 'positionText' = 1))
+    # Races Started = for each diverId (filter result data by the driverId, then count(the number of times the value in 'positionText' = anyNumber or 'R'))
+    # Races Finished = for each diverId (filter result data by the driverId, then count(the number of times the value in 'positionText' = anyNumber))
+    # Retiered = for each diverId (filter result data by the driverId, then count(the number of times the value in 'positionText' = 'R'))
+    # Disqualified = for each diverId (filter result data by the driverId, then count(the number of times the value in 'positionText' = 'D'))
+
+

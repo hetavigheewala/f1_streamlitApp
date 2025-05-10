@@ -4,13 +4,13 @@ import streamlit as st
 def display_about_f1():
     """Displays a beginner's guide to Formula 1 with basic history, rules, and structure."""
     
-    st.markdown("<h1 style='text-align: center;'>About Formula 1</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center; color: red;'>About Formula 1</h1>", unsafe_allow_html=True)
 
 
-    st.image('asset/about_img/f1_banner.jpg', use_column_width=True)
+    st.image('asset/about_img/f1_banner.jpg', use_container_width=True)
 
     # History and Overview
-    st.header("What is Formula 1 (F1)?")
+    st.markdown("<h2 style='color: red;'>What is Formula 1 (F1)?</h2>", unsafe_allow_html=True)
     st.write(
         """
         Formula 1, also known as F1, is the most exciting and fast-paced form of motorsport in the world. It all started in 1950, 
@@ -26,7 +26,7 @@ def display_about_f1():
         st.image('asset/about_img/f1_history.jpg', caption='The First F1 Race in 1950')
 
     # Basic Terminology
-    st.header("Key F1 Terms You Should Know")
+    st.markdown("<h2 style='color: red;'>Key F1 Terms You Should Know</h2>", unsafe_allow_html=True)
     st.write(
         """
         Here's a quick guide to some important F1 terms that will help you understand the sport better:
@@ -46,7 +46,7 @@ def display_about_f1():
         st.image('asset/about_img/pole_position.jpg', caption='Cars lining up for Pole Position')
 
     # Basic Race Rules
-    st.header("How Does an F1 Weekend Work?")
+    st.markdown("<h2 style='color: red;'>How Does an F1 Weekend Work?</h2>", unsafe_allow_html=True)
     st.write(
         """
         An F1 race weekend is divided into different sessions:
@@ -67,7 +67,7 @@ def display_about_f1():
         st.image('asset/about_img/f1_weekend.jpg', caption='F1 Sprint Weekend Structure')
 
     # Tires in F1
-    st.header("Tires: The Secret to Speed!")
+    st.markdown("<h2 style='color: red;'>Tires: The Secret to Speed!</h2>", unsafe_allow_html=True)
     st.write(
         """
         Tires play a big role in Formula 1. Different tire types are used depending on the weather and track conditions:
@@ -86,7 +86,7 @@ def display_about_f1():
         st.image('asset/about_img/f1_tires.jpg', caption='Different tire types in F1')
 
     # Flags in F1 Racing
-    st.header("What Do the Flags Mean?")
+    st.markdown("<h2 style='color: red;'>What Do the Flags Mean?</h2>", unsafe_allow_html=True)
     st.write(
         """
         Flags are used to communicate important information to the drivers during the race. Here are the main flags you’ll see:
@@ -106,7 +106,7 @@ def display_about_f1():
         st.image('asset/about_img/f1_flags.jpg', caption='F1 Race Flags')
 
     # Structure of F1 Teams
-    st.header("F1 Teams: Who's Behind the Wheel?")
+    st.markdown("<h2 style='color: red;'>F1 Teams: Who's Behind the Wheel?</h2>", unsafe_allow_html=True)
     st.write(
         """
         F1 teams are made up of drivers, engineers, and pit crews. Each team has two drivers who race for the team, and they compete 
@@ -126,7 +126,8 @@ def display_about_f1():
         st.image('asset/about_img/f1_teams.jpg', caption='F1 Team Structure and Pit Crews')
 
     # Conclusion Section
-    st.header("Why Formula 1 is So Exciting!")
+    st.markdown("<h2 style='color: red;'>Why Formula 1 is So Exciting!</h2>", unsafe_allow_html=True)
+
     st.write(
         """
         Formula 1 is more than just a sport – it's a world of speed, precision, technology, and teamwork. The excitement never ends 

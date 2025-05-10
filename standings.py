@@ -143,7 +143,7 @@ def ViewStanding():
     with cols[0]:
         st.image(team_logo, width=130)
     with cols[1]:
-        st.markdown("<h1 class='title'>Driver and Constructor Standings </h1>", unsafe_allow_html=True)
+        st.markdown("<h1 class='title'; style='color: red;'>Driver and Constructor Standings</h1>", unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)  # Adds two new lines
 

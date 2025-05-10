@@ -6,6 +6,8 @@ races_file = 'data/races.csv'
 results_file = 'data/results.csv'
 driver_standings_file = 'data/driver_standings.csv'
 drivers_file = 'data/drivers.csv'
+constructors_standings_file = 'data/constructor_standings.csv'
+constructors_file = 'data/constructors.csv'
 
 
 # Drivers Standings based on Year
@@ -29,19 +31,47 @@ def driversStandingsDf(year):
     return selected_driver_standings, selected_drivers
 
 
-def wroldChampionshipDataDf():
+def world_driver_championship_df():
     seasons_data = pd.read_csv(seasons_file)
     races_data = pd.read_csv(races_file)
     driver_standings_data = pd.read_csv(driver_standings_file)
     
-    world_championship_data = []
+    world_driver_championship_data = []
     for year in seasons_data['year']:
         year_races = races_data[races_data['year'] == year]
         last_round = year_races['round'].max()
         last_race_id = year_races[year_races['round'] == last_round]['raceId'].iloc[0]
         year_results = driver_standings_data[driver_standings_data['raceId'] == last_race_id]
         max_points_driver = year_results.loc[year_results['points'].idxmax(), 'driverId']
-        world_championship_data.append({'Year': year, 'Last Round': last_round, 'Last Race ID': last_race_id, 'Driver ID': max_points_driver})
-    world_championship_df = pd.DataFrame(world_championship_data)
+        world_driver_championship_data.append({'Year': year, 'Last Round': last_round, 'Last Race ID': last_race_id, 'Driver ID': max_points_driver})
+    world_driver_championship_df = pd.DataFrame(world_driver_championship_data)
 
-    return world_championship_df
+    return world_driver_championship_df
+
+
+def world_constructors_championship_df():
+    seasons_data = pd.read_csv(seasons_file)
+    races_data = pd.read_csv(races_file)    
+    constructors_standings_data = pd.read_csv(constructors_standings_file)
+    
+    world_constructors_championship_data = []
+    for year in seasons_data['year']:
+        year_races = races_data[races_data['year'] == year]
+        last_round = year_races['round'].max()
+        last_race_id = year_races[year_races['round'] == last_round]['raceId'].iloc[0]
+        year_results = constructors_standings_data[constructors_standings_data['raceId'] == last_race_id]
+        
+        if not year_results.empty and 'points' in year_results.columns and not year_results['points'].isna().all():
+            max_points_constructor = year_results.loc[year_results['points'].idxmax(), 'constructorId']
+        else:
+            max_points_constructor = None  # handle the case where no constructor points are found
+        
+        world_constructors_championship_data.append({
+            'Year': year,
+            'Last Round': last_round,
+            'Last Race ID': last_race_id,
+            'Constructor ID': max_points_constructor
+        })
+    
+    world_constructors_championship_df = pd.DataFrame(world_constructors_championship_data)
+    return world_constructors_championship_df

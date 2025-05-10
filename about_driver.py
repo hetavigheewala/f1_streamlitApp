@@ -4,10 +4,9 @@ from PIL import Image
 import os
 from io import BytesIO
 import base64
-from dataBank import wroldChampionshipDataDf 
+from dataBank import world_driver_championship_df 
 
 
-# Paths to data files
 seasons_file = 'data/seasons.csv'
 races_file = 'data/races.csv'
 results_file = 'data/results.csv'
@@ -42,12 +41,11 @@ def load_team_image(file_path, size=(40, 40)):
     except FileNotFoundError:
         return None
 
-    driver_standings_data = pd.read_csv(driver_standings_file)
 
-def driverInfo():
+def driver_info():
     
     # Header
-        # Set F1 theme styles
+    # Set F1 theme styles
     st.markdown(
         """
         <style>
@@ -81,7 +79,7 @@ def driverInfo():
         unsafe_allow_html=True
     )
 
-    # Display F1 logo and "Current Standing" beside it
+    # display F1 logo and "Current Standing" beside it
     logo_file = os.path.join("asset/f1_red.png")
     team_logo = load_F1_image(logo_file)
     
@@ -89,20 +87,21 @@ def driverInfo():
     with cols[0]:
         st.image(team_logo, width=175)
     with cols[1]:
-        st.markdown("<h1 class='title'>F1 Driver Profile </h1>", unsafe_allow_html=True)
+        
+        st.markdown("<h1 class='title' style='color: red; 'text-align: left; '>F1 Driver Profile</h1>", unsafe_allow_html=True)
 
-    st.markdown("<br>", unsafe_allow_html=True)  # Adds two new lines
+    st.markdown("<br>", unsafe_allow_html=True)  
 
     
     
-    # Load available years
+    # load available years
     seasons_data = pd.read_csv(seasons_file)
     years = seasons_data['year'].unique()
 
-    # Dropdown for year selection
+    # dropdown for year selection
     selected_year = st.selectbox("Select Year", options=sorted(years, reverse=True))
 
-    # Filter data based on selected year
+    # filter data based on selected year
     races_data = pd.read_csv(races_file)
     selected_races = races_data[races_data['year'] == selected_year]
 
@@ -110,22 +109,34 @@ def driverInfo():
     race_ids = selected_races['raceId']
     selected_results = results_data[results_data['raceId'].isin(race_ids)]
 
-    # Get last race ID
+    #get last race ID
     last_race_id = selected_races.loc[selected_races['round'].idxmax(), 'raceId']
 
     driver_standings_data = pd.read_csv(driver_standings_file)
     selected_driver_standings = driver_standings_data[driver_standings_data['raceId'] == last_race_id]
-
-
-    world_championship_df = wroldChampionshipDataDf()
+    world_championship_df = world_driver_championship_df()
 
 
     drivers_data = pd.read_csv(drivers_file)
     selected_drivers = drivers_data[drivers_data['driverId'].isin(selected_driver_standings['driverId'])]
 
-    # Generate driver statistics
+    # add a dropdown for selecting drivers
+    driver_names = ["ALL"] + [
+        f"{driver['forename']} {driver['surname']}" for _, driver in selected_drivers.iterrows()
+    ]
+    selected_driver_name = st.selectbox("Select Driver", options=driver_names)
+
+    # filter driver profiles based on selection
+    if selected_driver_name == "ALL":
+        drivers_to_display = selected_drivers
+    else:
+        drivers_to_display = selected_drivers[
+            (selected_drivers['forename'] + " " + selected_drivers['surname']) == selected_driver_name
+        ]
+
+    # generate driver statistics for filtered drivers
     driver_info_list = []
-    for _, driver in selected_drivers.iterrows():
+    for _, driver in drivers_to_display.iterrows():
         driver_id = driver['driverId']
         driver_name = f"{driver['forename']} {driver['surname']}"
         driver_code = driver.get('code', 'N/A')
@@ -134,7 +145,7 @@ def driverInfo():
         nationality = driver['nationality']
         url = driver['url']
         
-        # Career stats
+        # career stats
         driver_results = results_data[results_data['driverId'] == driver_id]
         podiums = driver_results[driver_results['positionText'].isin(['1', '2', '3'])].shape[0]
         wins = driver_results[driver_results['positionText'] == '1'].shape[0]
@@ -142,12 +153,11 @@ def driverInfo():
         races_finished = driver_results[driver_results['positionText'].str.isdigit()].shape[0]
         retired = driver_results[driver_results['positionText'] == 'R'].shape[0]
         disqualified = driver_results[driver_results['positionText'] == 'D'].shape[0]
-        career_points = driver_results['points'].sum()
+        career_points = round(driver_results['points'].sum(), 2)
         world_championships = world_championship_df[world_championship_df['Driver ID'] == driver_id].shape[0]
         poles = driver_results[driver_results['grid'] == 1].shape[0]
 
-
-        # Create driver statistics
+        # create driver statistics
         driver_info = {
             'Driver Name': driver_name,
             'Driver Code': driver_code,
@@ -167,7 +177,7 @@ def driverInfo():
         }
         driver_info_list.append(driver_info)
 
-    # Display driver statistics in containers
+    # driver statistics in containers
     for driver in driver_info_list:
         with st.container():
             st.markdown(
@@ -179,7 +189,7 @@ def driverInfo():
                 unsafe_allow_html=True,
             )
 
-            # Display the image at the top, spanning the entire width
+            # image at the top, spanning the entire width
             image_path = f"asset/path_to_driver/{driver['Driver Code']}.png"
             image = load_image(image_path)
             if image:
@@ -193,10 +203,8 @@ def driverInfo():
                     unsafe_allow_html=True,
                 )
 
-
-
-            # Create two columns below the image
-            cols = st.columns(2)  # Two equally sized columns
+            # create two columns below the image
+            cols = st.columns(2)  # two equally sized columns
 
             # Column 1: Basic Info
             with cols[0]:
@@ -224,10 +232,7 @@ def driverInfo():
                 unsafe_allow_html=True,
             )
 
-# Run the function if this script is executed directly
 if __name__ == "__main__":
-    driverInfo()
-
-
+    driver_info()
 
 

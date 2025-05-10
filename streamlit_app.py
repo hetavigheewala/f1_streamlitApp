@@ -1,7 +1,8 @@
 import streamlit as st
 import requests
 from about_f1 import display_about_f1
-from about_driver import driverInfo
+from about_driver import driver_info
+from about_constructor import constructors_info
 from standings import ViewStanding
 from datetime import datetime
 
@@ -93,7 +94,7 @@ for button in sidebar_buttons:
 
 # Page definitions
 def home_page():
-    st.title("F1 Data Analysis Project")
+    st.markdown("<h1 style='color: red;'>F1 Data Analysis Project</h1>", unsafe_allow_html=True)
     st.markdown("""
         Welcome to the F1 Data Analysis Project, your one-stop resource for deep insights into 
         the world of Formula 1 racing. Here, you'll find everything from driver profiles and 
@@ -103,12 +104,9 @@ def home_page():
     """)
 
     # F1 News Section
-    st.header("F1 News")
+    st.markdown("<h2 style='color: red;'>F1 News</h2>", unsafe_allow_html=True)
     st.write("Catch up on the latest happenings in the F1 world, from race results to team changes and breaking news. This section keeps you up-to-date on all things Formula 1.")
 
-
-    # Fetch and display upcoming races
-    st.header("Upcoming Races")
 
 
     # Footer
@@ -117,41 +115,41 @@ def home_page():
 
 
 def track_info_page():
-    st.title("Track Information")
+    st.markdown("<h1 style='color: red;'>Track Information</h1>", unsafe_allow_html=True)
     st.markdown("""
         Here you can find detailed information about various F1 tracks, including 
         their characteristics, history, and notable events.
     """)
 
 def constructors():
-    st.title("Constructors")
+    st.markdown("<h1 style='color: red;'>Constructors</h1>", unsafe_allow_html=True)
     st.markdown("""
         Explore the profiles of constructors, including their histories, statistics, 
         and achievements throughout the seasons.
     """)
 
 def drivers():
-    st.title("Drivers")
+    st.markdown("<h1 style='color: red;'>Drivers</h1>", unsafe_allow_html=True)
     st.markdown("""
         Explore the profiles of drivers, including their histories, statistics, 
         and achievements throughout the seasons.
     """)
 def predictions_page():
-    st.title("Race Predictions")
+    st.markdown("<h1 style='color: red;'>Race Predictions</h1>", unsafe_allow_html=True)
     st.markdown("""
         Analyze data to make predictions about upcoming races, drivers, and team performance. 
         Use statistical models and machine learning for insights.
     """)
 
 def analysis_page():
-    st.title("Race Analysis")
+    st.markdown("<h1 style='color: red;'>Race Analysis</h1>", unsafe_allow_html=True)
     st.markdown("""
         Dive deep into race analyses, including lap times, pit stops, and team strategies. 
         Understand the factors that influence race outcomes.
     """)
 
 def contact_page():
-    st.title("Contact Me")
+    st.markdown("<h1 style='color: red;'>Contact Me</h1>", unsafe_allow_html=True)
     st.markdown("""
         For inquiries, feedback, or suggestions, please reach out to us via the provided 
         contact form or through our social media channels.
@@ -165,9 +163,9 @@ elif st.session_state.selected_page == "about_f1":
 elif st.session_state.selected_page == "track_info":
     track_info_page()
 elif st.session_state.selected_page == "constructors":
-    constructors()
+    constructors_info()
 elif st.session_state.selected_page == "drivers":
-    driverInfo()
+    driver_info()
 elif st.session_state.selected_page == "predictions":
     predictions_page()
 elif st.session_state.selected_page == "standings":
