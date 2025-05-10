@@ -27,10 +27,9 @@ def image_to_base64(image):
     image.save(buffered, format="PNG")
     return base64.b64encode(buffered.getvalue()).decode()
 
-def load_F1_image(file_path, size=(400, 155)):
+def load_F1_image(file_path):
     try:
         img = Image.open(file_path)
-        img = img.resize(size)
         return img
     except FileNotFoundError:
         return None
@@ -102,11 +101,11 @@ def circuit_info():
 
     selected_circuits = selected_races['circuitId'].unique()
     matching_circuits = circuits_data[circuits_data['circuitId'].isin(selected_circuits)]
-    circuit_names = ["ALL"] + matching_circuits['name'].values.tolist()
+    circuit_names = ["All"] + matching_circuits['name'].values.tolist()
     
     selected_circuit_name = st.selectbox("Select Circuit", options=circuit_names)
 
-    if selected_circuit_name == "ALL":
+    if selected_circuit_name == "All":
         circuit_ids_to_process = selected_circuits
     else:
         circuit_ids_to_process = matching_circuits[matching_circuits['name'] == selected_circuit_name]['circuitId'].values
@@ -121,7 +120,7 @@ def circuit_info():
         country = circuit_details['country']
         url = circuit_details['url']
         circuit_ref = circuit_details['circuitRef']
-        circuit_image = load_F1_image(f'images/{circuit_ref}.png')
+        circuit_image = load_F1_image(f"asset/path_to_circuit/{circuit_ref}.png")
 
         # counr races per circuit
         count_races = len(races_data[races_data['circuitId'] == circuit_id])

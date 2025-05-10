@@ -121,13 +121,13 @@ def driver_info():
     selected_drivers = drivers_data[drivers_data['driverId'].isin(selected_driver_standings['driverId'])]
 
     # add a dropdown for selecting drivers
-    driver_names = ["ALL"] + [
+    driver_names = ["All"] + [
         f"{driver['forename']} {driver['surname']}" for _, driver in selected_drivers.iterrows()
     ]
     selected_driver_name = st.selectbox("Select Driver", options=driver_names)
 
     # filter driver profiles based on selection
-    if selected_driver_name == "ALL":
+    if selected_driver_name == "All":
         drivers_to_display = selected_drivers
     else:
         drivers_to_display = selected_drivers[
