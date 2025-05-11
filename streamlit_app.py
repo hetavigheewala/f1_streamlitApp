@@ -86,8 +86,7 @@ sidebar_buttons = [
     "Constructor Analysis",
     "Circuit Analysis",
     "Race Analysis",
-    "Predictions",
-    "Contact"
+    "Predictions"
 ]
 
 # Create sidebar buttons
@@ -137,12 +136,6 @@ def predictions_page():
         Use statistical models and machine learning for insights.
     """)
 
-def contact_page():
-    st.markdown("<h1 style='color: red;'>Contact Me</h1>", unsafe_allow_html=True)
-    st.markdown("""
-        For inquiries, feedback, or suggestions, please reach out to us via the provided 
-        contact form or through our social media channels.
-    """)
 
 # Render content based on selected page
 if st.session_state.selected_page == "home":
@@ -167,5 +160,4 @@ elif st.session_state.selected_page == "race_analysis":
     race_analysis_page()
 elif st.session_state.selected_page == "predictions":
     predictions_page()
-elif st.session_state.selected_page == "contact":
-    contact_page()
+
