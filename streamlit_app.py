@@ -100,7 +100,7 @@ def home_page():
     st.markdown("""
         Welcome to the F1 Data Analysis Project, your one-stop resource for deep insights into 
         the world of Formula 1 racing. Here, you'll find everything from driver profiles and 
-        team histories to in-depth race analyses, covering pit stops, lap times, and more. 
+        team histories to in-depth race analysis, covering pit stops, lap times, and more. 
         Whether you're an F1 enthusiast or a data science fan, this site is designed to make 
         the data behind the excitement accessible and engaging.
     """)
@@ -108,8 +108,7 @@ def home_page():
     # F1 News Section
     st.markdown("<h2 style='color: red;'>F1 News</h2>", unsafe_allow_html=True)
     st.write("Catch up on the latest happenings in the F1 world, from race results to team changes and breaking news. This section keeps you up-to-date on all things Formula 1.")
-
-
+    st.markdown("[Click here to explore the latest F1 news!](https://www.formula1.com/en/latest/all)", unsafe_allow_html=True)
 
     # Footer
     st.markdown("---")
