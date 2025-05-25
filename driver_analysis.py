@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+import altair as alt
 import os
 from PIL import Image
 
@@ -22,11 +23,10 @@ def load_F1_image(file_path, size=(400, 155)):
         return None
 
 def top_10_driver_by_points(driver_analysis_df, selected_year):
-    # Load necessary data
     races_data = pd.read_csv(races_file)
     results_data = pd.read_csv(results_file)
 
-    # Filter races based on the selected year
+    # filter races based on the selected year
     if selected_year == "All":
         selected_races = races_data
     else:
@@ -34,19 +34,11 @@ def top_10_driver_by_points(driver_analysis_df, selected_year):
     
     race_ids = selected_races['raceId'].tolist()
 
-    # Filter results to only include the selected races
-    selected_results_data = results_data[results_data['raceId'].isin(race_ids)]
+    selected_results_data = results_data[results_data['raceId'].isin(race_ids)]     # filter results to only include the selected races
+    selected_drivers = selected_results_data['driverId'].unique()                   # get all unique driver IDs from the filtered results
+    selected_drivers_analysis = driver_analysis_df[driver_analysis_df['driverId'].isin(selected_drivers)]       # filter the driver analysis DataFrame to only include the selected drivers
+    top_drivers = selected_drivers_analysis.sort_values(by='Career Points', ascending=False).head(10)           # sort the filtered drivers by career points in descending order
 
-    # Get all unique driver IDs from the filtered results
-    selected_drivers = selected_results_data['driverId'].unique()
-
-    # Filter the driver analysis DataFrame to only include the selected drivers
-    selected_drivers_analysis = driver_analysis_df[driver_analysis_df['driverId'].isin(selected_drivers)]
-
-    # Sort the filtered drivers by career points in descending order
-    top_drivers = selected_drivers_analysis.sort_values(by='Career Points', ascending=False).head(10)
-
-    # Use Streamlit to display the results
     st.markdown(
         f"""
             <div style="text-align: center; margin-left: -50px; font-size: 30px;  font-weight: bold; color: {'#E30613'};">
@@ -65,14 +57,30 @@ def top_10_driver_by_points(driver_analysis_df, selected_year):
         '#6C98FF', '#229971', '#1868DB', '#01C00E', '#9C9FA2'
     ]
 
-    # Map the colors to the drivers
+    # map the colors to the drivers
     top_drivers['Color'] = color_scheme[:len(top_drivers)]
     top_drivers['hover_text'] = top_drivers['number'] + " " + top_drivers['forename'] + " " + top_drivers['surname'].astype(str)
 
-    chart_data = top_drivers[['code', 'Career Points']].set_index('code')
+    chart = alt.Chart(top_drivers).mark_bar().encode(
+            x=alt.X('code', sort=alt.EncodingSortField(field='Career Points', order='descending'), title=None),
+            y=alt.Y('Career Points', title='Points'),
+            color=alt.Color('Color', scale=None),
+            tooltip=[
+                alt.Tooltip('hover_text', title='Driver'),
+                alt.Tooltip('Career Points', title='Points')
+            ]
+        ).properties(
+            height=500,
+            width=700
+        ).configure_axis(
+            labelFontSize=12,
+            titleFontSize=14
+        ).configure_view(
+            strokeWidth=0
+        )
 
-    # Streamlit bar chart
-    st.bar_chart(chart_data)
+    # chart in Streamlit
+    st.altair_chart(chart, use_container_width=True)
 
     
 def driver_analysis_page():
@@ -83,7 +91,7 @@ def driver_analysis_page():
     
     cols = st.columns([1, 5])
     with cols[0]:
-        st.markdown("<br>", unsafe_allow_html=True)  # Adds two new lines
+        st.markdown("<br>", unsafe_allow_html=True) 
         st.image(team_logo, width=175)
     with cols[1]:
         st.markdown(
