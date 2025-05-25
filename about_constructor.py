@@ -84,10 +84,13 @@ def constructors_info():
     
     cols = st.columns([1, 5])
     with cols[0]:
+        st.markdown("<br>", unsafe_allow_html=True)  # Adds two new lines
         st.image(team_logo, width=175)
     with cols[1]:
-        
-        st.markdown("<h1 class='title' style='color: red; 'text-align: left; '>F1 Constructors Profile</h1>", unsafe_allow_html=True)
+        st.markdown(
+            "<h1 class='title' style='color: red; text-align: center; margin-bottom: 0;'>F1 Constructors Profile</h1>",
+            unsafe_allow_html=True
+        )
 
     st.markdown("<br>", unsafe_allow_html=True)  # Adds two new lines
 

@@ -5,7 +5,18 @@ from about_driver import driver_info
 from about_constructor import constructors_info
 from about_circuit import circuit_info
 from standings import ViewStanding
+from driver_analysis import driver_analysis_page
 from datetime import datetime
+from PIL import Image
+import os
+
+def load_F1_image(file_path, size=(400, 155)):
+    try:
+        img = Image.open(file_path)
+        img = img.resize(size)  
+        return img
+    except FileNotFoundError:
+        return None
 
 
 # Set up the Streamlit app layout with F1 theme
@@ -86,7 +97,8 @@ sidebar_buttons = [
     "Constructor Analysis",
     "Circuit Analysis",
     "Race Analysis",
-    "Predictions"
+    "Predictions",
+    "Contact"
 ]
 
 # Create sidebar buttons
@@ -96,11 +108,21 @@ for button in sidebar_buttons:
 
 # Page definitions
 def home_page():
-    st.markdown("<h1 style='color: red;'>F1 Data Analysis Project</h1>", unsafe_allow_html=True)
+    logo_file = os.path.join("asset/f1_red.png")
+    team_logo = load_F1_image(logo_file)
+    
+    cols = st.columns([1, 1, 1])
+    with cols[1]:  # Center column
+        st.image(team_logo, width=175)
+    st.markdown("<br>", unsafe_allow_html=True)  # Adds two new lines
+    st.markdown(
+            "<h1 class='title' style='color: red; text-align: left; margin-bottom: 0;'>F1 Data Analysis Project</h1>",
+            unsafe_allow_html=True
+        )
     st.markdown("""
         Welcome to the F1 Data Analysis Project, your one-stop resource for deep insights into 
         the world of Formula 1 racing. Here, you'll find everything from driver profiles and 
-        team histories to in-depth race analysis, covering pit stops, lap times, and more. 
+        team histories to in-depth race analyses, covering pit stops, lap times, and more. 
         Whether you're an F1 enthusiast or a data science fan, this site is designed to make 
         the data behind the excitement accessible and engaging.
     """)
@@ -115,8 +137,11 @@ def home_page():
     st.markdown("<div class='footer'>&#169; 2024 F1 Data Project. All Rights and Wrong Reserved.</div>", unsafe_allow_html=True)
 
 
-def driver_analysis_page():
-    st.markdown("<h1 style='color: red;'>Driver Analysis</h1>", unsafe_allow_html=True)
+
+    # Footer
+    st.markdown("---")
+    st.markdown("<div class='footer'>&#169; 2024 F1 Data Project. All Rights and Wrong Reserved.</div>", unsafe_allow_html=True)
+
 
 def constructor_analysis_page():
     st.markdown("<h1 style='color: red;'>Constructor Analysis</h1>", unsafe_allow_html=True)
@@ -135,6 +160,12 @@ def predictions_page():
         Use statistical models and machine learning for insights.
     """)
 
+def contact_page():
+    st.markdown("<h1 style='color: red;'>Contact Me</h1>", unsafe_allow_html=True)
+    st.markdown("""
+        For inquiries, feedback, or suggestions, please reach out to us via the provided 
+        contact form or through our social media channels.
+    """)
 
 # Render content based on selected page
 if st.session_state.selected_page == "home":
@@ -159,4 +190,5 @@ elif st.session_state.selected_page == "race_analysis":
     race_analysis_page()
 elif st.session_state.selected_page == "predictions":
     predictions_page()
-
+elif st.session_state.selected_page == "contact":
+    contact_page()

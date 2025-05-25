@@ -27,14 +27,14 @@ def load_constructor_image(file_path, size=(40, 40)):
     except FileNotFoundError:
         return None
 
-def load_F1_image(file_path, size=(350, 155)):
+def load_F1_image(file_path, size=(400, 155)):
     try:
         img = Image.open(file_path)
         img = img.resize(size)  
         return img
     except FileNotFoundError:
         return None
-
+    
 def load_team_image(file_path, size=(40, 40)):
     try:
         img = Image.open(file_path)
@@ -192,10 +192,14 @@ def ViewStanding():
     
     cols = st.columns([1, 5])
     with cols[0]:
-        st.image(team_logo, width=130)
+        st.markdown("<br>", unsafe_allow_html=True)  # Adds two new lines
+        st.image(team_logo, width=175)
     with cols[1]:
-        st.markdown("<h1 class='title'; style='color: red;'>Driver and Constructor Standings</h1>", unsafe_allow_html=True)
-
+        st.markdown(
+            "<h1 class='title' style='color: red; text-align: center; margin-bottom: 0;'>Driver and Constructor Standings</h1>",
+            unsafe_allow_html=True
+        )
+        
     st.markdown("<br>", unsafe_allow_html=True)  
 
     # load available years

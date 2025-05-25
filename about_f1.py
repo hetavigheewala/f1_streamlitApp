@@ -1,10 +1,32 @@
 import streamlit as st
+from PIL import Image
+import os
 
+def load_F1_image(file_path, size=(400, 155)):
+    try:
+        img = Image.open(file_path)
+        img = img.resize(size)  
+        return img
+    except FileNotFoundError:
+        return None
 
 def display_about_f1():
     """Displays a beginner's guide to Formula 1 with basic history, rules, and structure."""
     
-    st.markdown("<h1 style='text-align: center; color: red;'>About Formula 1</h1>", unsafe_allow_html=True)
+    logo_file = os.path.join("asset/f1_red.png")
+    team_logo = load_F1_image(logo_file)
+    
+    cols = st.columns([1, 5])
+    with cols[0]:
+        st.markdown("<br>", unsafe_allow_html=True)  # Adds two new lines
+        st.image(team_logo, width=175)
+    with cols[1]:
+        st.markdown(
+            "<h1 class='title' style='color: red; text-align: center; margin-bottom: 0;'>About Formula 1</h1>",
+            unsafe_allow_html=True
+        )
+
+    st.markdown("<br>", unsafe_allow_html=True)  # Adds two new lines
 
 
     st.image('asset/about_img/f1_banner.jpg', use_container_width=True)

@@ -27,6 +27,13 @@ def image_to_base64(image):
     image.save(buffered, format="PNG")
     return base64.b64encode(buffered.getvalue()).decode()
 
+def load_logo_image(file_path, size=(400, 155)):
+    try:
+        img = Image.open(file_path)
+        img = img.resize(size)  
+        return img
+    except FileNotFoundError:
+        return None
 def load_F1_image(file_path):
     try:
         img = Image.open(file_path)
@@ -75,15 +82,17 @@ def circuit_info():
 
     # Display F1 logo and title
     logo_file = os.path.join("asset/f1_red.png")
-    team_logo = load_F1_image(logo_file)
+    team_logo = load_logo_image(logo_file)
     
     cols = st.columns([1, 5])
     with cols[0]:
+        st.markdown("<br>", unsafe_allow_html=True)  # Adds two new lines
         st.image(team_logo, width=175)
     with cols[1]:
+        
         st.markdown("<h1 class='title' style='color: red; 'text-align: left; '>F1 Circuits Profile</h1>", unsafe_allow_html=True)
 
-    st.markdown("<br>", unsafe_allow_html=True)  
+    st.markdown("<br>", unsafe_allow_html=True)  # Adds two new lines
 
     # load the seasons data
     seasons_data = pd.read_csv(seasons_file)
