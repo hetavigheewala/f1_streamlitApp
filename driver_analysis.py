@@ -99,7 +99,7 @@ def top_10_driver_by_points(driver_analysis_df, selected_year):
     )
 
     # Render the chart in Streamlit
-    st.plotly_chart(fig, use_container_width=True)
+  #  st.plotly_chart(fig, use_container_width=True)
 
     
 def driver_analysis_page():
