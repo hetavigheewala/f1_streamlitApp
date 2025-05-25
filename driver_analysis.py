@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import plotly.express as px
 import os
 from PIL import Image
 
@@ -70,36 +69,10 @@ def top_10_driver_by_points(driver_analysis_df, selected_year):
     top_drivers['Color'] = color_scheme[:len(top_drivers)]
     top_drivers['hover_text'] = top_drivers['number'] + " " + top_drivers['forename'] + " " + top_drivers['surname'].astype(str)
 
-    # Create a bar chart using Plotly
-    fig = px.bar(
-        top_drivers,
-        x='code', 
-        y='Career Points',
-        text='code',  # Show 'code' on top of the bar
-        hover_data=['hover_text'],  # Show combined hover text
-        labels={'code': '', 'Career Points': 'Points'},  # Hide x-axis label
-    )
+    chart_data = top_drivers[['code', 'Career Points']].set_index('code')
 
-    # Update bar colors using the custom color scheme
-    fig.update_traces(
-        marker=dict(color=top_drivers['Color']),
-        texttemplate='%{text}', 
-        textposition='outside',
-        hovertemplate='<b>Driver: %{customdata[0]}</b><br>Points: %{y}<extra></extra>'
-    )
-    fig.update_layout(
-        xaxis_title=None,  # Hide x-axis title
-        yaxis_title='Points',  # Keep y-axis title as Points
-        showlegend=False,  # Hide the legend
-        xaxis=dict(
-            showticklabels=False,  # Hide tick labels on x-axis
-        ),
-        margin=dict(l=20, r=20, t=50, b=20),  # Adjust margins
-        height=500,  # Set the height of the chart
-    )
-
-    # Render the chart in Streamlit
-  #  st.plotly_chart(fig, use_container_width=True)
+    # Streamlit bar chart
+    st.bar_chart(chart_data)
 
     
 def driver_analysis_page():
