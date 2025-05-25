@@ -138,11 +138,6 @@ def home_page():
 
 
 
-    # Footer
-    st.markdown("---")
-    st.markdown("<div class='footer'>&#169; 2024 F1 Data Project. All Rights and Wrong Reserved.</div>", unsafe_allow_html=True)
-
-
 def constructor_analysis_page():
     st.markdown("<h1 style='color: red;'>Constructor Analysis</h1>", unsafe_allow_html=True)
 
