@@ -55,14 +55,19 @@ def top_10_driver_by_points(driver_analysis_df, selected_year):
             The Top 10 Drivers Career Points Analysis highlights the most consistent and successful drivers based on their total career points. It helps spot performance patterns and compare drivers across eras. Filtering by season shows who competed and excelled in specific years, giving insights into career evolution and dominance. The vertical bar chart displays the top 10 drivers’ career points, with each bar labeled by driver code and hover details showing full name and car number. This static comparison focuses on overall achievements, making it easy to explore F1’s competitive history and the legacy of its top talents.        """
     )
 
-    top_drivers_df['hover_text'] = top_drivers_df['number_x'] + " " + top_drivers_df['Name']
 
     chart = alt.Chart(top_drivers_df).mark_bar().encode(
-            x=alt.X('code_x', sort=alt.EncodingSortField(field='Career Points', order='descending'), title=None),
+            x=alt.X('code_x', sort=alt.EncodingSortField(field='Career Points', order='descending'), title=None,
+            axis=alt.Axis(labelAngle=360)  
+        ),
             y=alt.Y('Career Points', title='Points'),
             color=alt.Color('Color', scale=None),
             tooltip=[
-                alt.Tooltip('hover_text', title='Driver'),
+                alt.Tooltip('Name', title='Driver Name'),
+                alt.Tooltip('code_x', title='Code'),
+                alt.Tooltip('number_x', title='Driver Number'),
+                    
+                # Group: Performance Metrics
                 alt.Tooltip('Career Points', title='Points')
             ]
         ).properties(
@@ -141,7 +146,11 @@ def top_10_driver_by_world_championships(top_drivers_df, selected_year):
         ),
         color=alt.Color('Color', scale=None),
         tooltip=[
-            alt.Tooltip('name', title='Driver'),
+            alt.Tooltip('name', title='Driver Name'),
+            alt.Tooltip('code', title='Code'),
+            alt.Tooltip('number', title='Driver Number'),
+                
+            # Group: Performance Metrics
             alt.Tooltip('championship', title='Championships')
         ]
     ).properties(
@@ -154,7 +163,7 @@ def top_10_driver_by_world_championships(top_drivers_df, selected_year):
         strokeWidth=0
     )
     st.altair_chart(chart, use_container_width=True)
-def top_10_driver_by_wins(top_drivers_df):
+def top_10_driver_by_wins(top_drivers_df, selected_year):
     
     st.markdown(
         f"""
@@ -170,7 +179,22 @@ def top_10_driver_by_wins(top_drivers_df):
         The Top 10 Drivers by Wins analysis provides valuable insights into driver performance by highlighting those with the highest career victories. For analysts and teams, it offers a clear view of consistency and success, helping to identify patterns in winning strategies and the impact of various factors like car performance and team dynamics. This data can guide decisions on driver recruitment, team investments, and race strategies. Fans benefit by gaining a deeper appreciation for the sport’s history and understanding what sets top drivers apart. By combining historical data with actionable insights, this analysis bridges performance trends with the competitive spirit of Formula 1.
         """
         )
-    top_10_wins= top_drivers_df.sort_values(by='Career Wins', ascending=False).head(10)
+    
+    if selected_year == "All":
+        selected_races = races_data
+    else:
+        selected_races = races_data[races_data['year'] == int(selected_year)]
+    
+    race_ids = selected_races['raceId'].tolist()
+
+    selected_results_data = results_data[results_data['raceId'].isin(race_ids)]     # filter results to only include the selected races
+    selected_drivers = selected_results_data['driverId'].unique()                   # get all unique driver IDs from the filtered results
+    selected_drivers_analysis = top_drivers_df[top_drivers_df['driverId'].isin(selected_drivers)]       # filter the driver analysis DataFrame to only include the selected drivers
+    top_10_wins= selected_drivers_analysis.sort_values(by='Career Wins', ascending=False).head(10)
+
+    top_10_wins['Crash Percentage'] = (top_10_wins['Career Wins'] / top_10_wins['Races'] * 100).round(2)
+    top_10_wins['Crash Percentage String'] = (top_10_wins['Career Wins'] / top_10_wins['Races'] * 100).round(2).astype(str) + "%"
+
 
     # map the colors to the drivers
     top_10_wins['hover_text'] = top_10_wins['number_x'] + " " + top_10_wins['Name']
@@ -181,10 +205,14 @@ def top_10_driver_by_wins(top_drivers_df):
             y=alt.Y('Career Wins', title='Career Wins'),
             color=alt.Color('Color', scale=None),
             tooltip=[
-                alt.Tooltip('hover_text', title='Driver'),
+                alt.Tooltip('hover_text', title='Driver Name'),
+                alt.Tooltip('code_x', title='Code'),
+                alt.Tooltip('number_x', title='Driver Number'),
+                
+                # Group: Performance Metrics
                 alt.Tooltip('Career Wins', title='Career Wins'),
-                alt.Tooltip('number_x', title = 'Driver Number'),
-                alt.Tooltip('code_x', title = 'Code')
+                alt.Tooltip('Races', title='Total Races'),
+                alt.Tooltip('Crash Percentage String', title='Win Rate')
             ]
         ).properties(
             height=500,
@@ -198,7 +226,7 @@ def top_10_driver_by_wins(top_drivers_df):
 
     # chart in Streamlit
     st.altair_chart(chart, use_container_width=True)
-def top_10_driver_by_pole(top_drivers_df):
+def top_10_driver_by_pole(top_drivers_df, selected_year):
     st.markdown(
         f"""
             <div style="text-align: center; margin-left: -50px; font-size: 30px;  font-weight: bold; color: {'#E30613'};">
@@ -213,7 +241,20 @@ def top_10_driver_by_pole(top_drivers_df):
             In Formula 1, the pole position is awarded to the driver who achieves the fastest time in qualifying, something that demands precision, skill, and flawless execution under immense pressure. Securing pole is crucial as it offers a clear track, minimizes the risk of early collisions, and provides a psychological advantage over competitors. The Top 10 Drivers by Pole analysis shows which drivers excel in qualifying and perform well under pressure. It helps teams spot patterns, improve strategies, and understand how drivers use strong starting positions to win races.   """
         )
 
-    top_10_poles = top_drivers_df.sort_values(by='Career Poles', ascending=False).head(10)
+    if selected_year == "All":
+        selected_races = races_data
+    else:
+        selected_races = races_data[races_data['year'] == int(selected_year)]
+    
+    race_ids = selected_races['raceId'].tolist()
+
+    selected_results_data = results_data[results_data['raceId'].isin(race_ids)]     # filter results to only include the selected races
+    selected_drivers = selected_results_data['driverId'].unique()                   # get all unique driver IDs from the filtered results
+    selected_drivers_analysis = top_drivers_df[top_drivers_df['driverId'].isin(selected_drivers)]       # filter the driver analysis DataFrame to only include the selected drivers
+    top_10_poles = selected_drivers_analysis.sort_values(by='Career Poles', ascending=False).head(10)
+
+    top_10_poles['Crash Percentage'] = (top_10_poles['Career Poles'] / top_10_poles['Races'] * 100).round(2)
+    top_10_poles['Crash Percentage String'] = (top_10_poles['Career Poles'] / top_10_poles['Races'] * 100).round(2).astype(str) + "%"
 
 
     # map the colors to the drivers
@@ -225,10 +266,15 @@ def top_10_driver_by_pole(top_drivers_df):
             y=alt.Y('Career Poles', title='Career Poles'),
             color=alt.Color('Color', scale=None),
             tooltip=[
-                alt.Tooltip('hover_text', title='Driver'),
+                # Group: Driver Details
+                alt.Tooltip('hover_text', title='Driver Name'),
+                alt.Tooltip('code_x', title='Code'),
+                alt.Tooltip('number_x', title='Driver Number'),
+                
+                # Group: Performance Metrics
                 alt.Tooltip('Career Poles', title='Career Poles'),
-                alt.Tooltip('number_x', title = 'Driver Number'),
-                alt.Tooltip('code_x', title = 'Code')
+                alt.Tooltip('Races', title='Total Races'),
+                alt.Tooltip('Crash Percentage String', title='Pole Rate')
             ]
         ).properties(
             height=500,
@@ -242,11 +288,11 @@ def top_10_driver_by_pole(top_drivers_df):
 
     # chart in Streamlit
     st.altair_chart(chart, use_container_width=True)
-def top_10_driver_by_crashes(top_drivers_df):
+def top_10_driver_by_crashes(top_drivers_df, selected_year):
     st.markdown(
         f"""
             <div style="text-align: center; margin-left: -50px; font-size: 30px;  font-weight: bold; color: {'#E30613'};">
-            Top 10 Drivers by Career Crashes
+            Top 10 Drivers by Crash Rate
             </div>
             """,
             unsafe_allow_html=True,
@@ -258,22 +304,42 @@ def top_10_driver_by_crashes(top_drivers_df):
         """
         )
 
-    top_10_crashers = top_drivers_df.sort_values(by='Career Crashes', ascending=False).head(10)
+
+
+    if selected_year == "All":
+        selected_races = races_data
+    else:
+        selected_races = races_data[races_data['year'] == int(selected_year)]
+    
+    race_ids = selected_races['raceId'].tolist()
+
+    selected_results_data = results_data[results_data['raceId'].isin(race_ids)]     # filter results to only include the selected races
+    selected_drivers = selected_results_data['driverId'].unique()                   # get all unique driver IDs from the filtered results
+    selected_drivers_analysis = top_drivers_df[top_drivers_df['driverId'].isin(selected_drivers)]       # filter the driver analysis DataFrame to only include the selected drivers
+
+    top_10_crashers = selected_drivers_analysis.sort_values(by='Career Crashes', ascending=False).head(10)
+    top_10_crashers['Crash Percentage'] = (top_10_crashers['Career Crashes'] / top_10_crashers['Races'] * 100).round(2)
+    top_10_crashers['Crash Percentage String'] = (top_10_crashers['Career Crashes'] / top_10_crashers['Races'] * 100).round(2).astype(str) + "%"
 
     # map the colors to the drivers
     top_10_crashers['hover_text'] =  top_10_crashers['Name'] 
     chart = alt.Chart(top_10_crashers).mark_bar().encode(
-            x=alt.X('surname_x', sort=alt.EncodingSortField(field='Career Crashes', order='descending'), title=None,
+        x=alt.X('surname_x', sort=alt.EncodingSortField(field='Crash Percentage', order='descending'), title=None,
             axis=alt.Axis(labelAngle=-45)  
         ),
-            y=alt.Y('Career Crashes', title='Career Crashes'),
-            color=alt.Color('Color', scale=None),
-            tooltip=[
-                alt.Tooltip('hover_text', title='Driver'),
-                alt.Tooltip('Career Crashes', title='Career Crashes'),
-                alt.Tooltip('number_x', title = 'Driver Number'),
-                alt.Tooltip('code_x', title = 'Code')
-            ]
+        y=alt.Y('Crash Percentage', title='Career Crashes'),
+        color=alt.Color('Color', scale=None),
+        tooltip=[
+            # Group: Driver Details
+            alt.Tooltip('hover_text', title='Driver Name'),
+            alt.Tooltip('code_x', title='Code'),
+            alt.Tooltip('number_x', title='Driver Number'),
+            
+            # Group: Performance Metrics
+            alt.Tooltip('Career Crashes', title='Total Crashes'),
+            alt.Tooltip('Races', title='Total Races'),
+            alt.Tooltip('Crash Percentage String', title='Crash Rate')
+        ]
         ).properties(
             height=500,
             width=700
@@ -284,11 +350,8 @@ def top_10_driver_by_crashes(top_drivers_df):
             strokeWidth=0
         )
     st.altair_chart(chart, use_container_width=True)
-def top_10_driver_without_wins(driver_analysis_df):
-    drivers_without_wins = driver_analysis_df[driver_analysis_df['Career Wins'] == 0]
-    drivers_without_wins_sorted = drivers_without_wins.sort_values(by='Races', ascending=False)         # sort by number of races in descending order
-    top_10_drivers_without_wins = drivers_without_wins_sorted.head(10)                                  # select top 10 drivers who have done the most races without any wins
-    
+def top_10_driver_without_wins(top_drivers_df, selected_year):
+
     st.markdown(
         f"""
             <div style="text-align: center; margin-left: -50px; font-size: 30px;  font-weight: bold; color: {'#E30613'};">
@@ -302,6 +365,24 @@ def top_10_driver_without_wins(driver_analysis_df):
         """
     This analysis identifies Formula 1 drivers who have participated in the highest number of races without securing a victory. By focusing on these drivers, we can explore the dynamics of driver performance, team strategy, and the competitive nature of the sport. This analysis highlights the commitment and consistency required to maintain a career in F1, even without reaching the top step of the podium. It also underscores the importance of factors beyond individual talent, such as car performance and team support, in achieving race wins. Understanding these elements provides valuable insights into the complexities of success in Formula 1.        """
     )
+    
+    
+
+    if selected_year == "All":
+        selected_races = races_data
+    else:
+        selected_races = races_data[races_data['year'] == int(selected_year)]
+    
+    race_ids = selected_races['raceId'].tolist()
+
+    selected_results_data = results_data[results_data['raceId'].isin(race_ids)]     # filter results to only include the selected races
+    selected_drivers = selected_results_data['driverId'].unique()                   # get all unique driver IDs from the filtered results
+    selected_drivers_analysis = top_drivers_df[top_drivers_df['driverId'].isin(selected_drivers)]       # filter the driver analysis DataFrame to only include the selected drivers
+
+    drivers_without_wins = selected_drivers_analysis[selected_drivers_analysis['Career Wins'] == 0]
+    drivers_without_wins_sorted = drivers_without_wins.sort_values(by='Races', ascending=False)         # sort by number of races in descending order
+    top_10_drivers_without_wins = drivers_without_wins_sorted.head(10)                                  # select top 10 drivers who have done the most races without any wins
+    
     top_10_drivers_without_wins['hover_text'] =  top_10_drivers_without_wins['Name']
     chart = alt.Chart(top_10_drivers_without_wins).mark_bar().encode(
         x=alt.X('surname_y', sort=alt.EncodingSortField(field='Races', order='descending'), title=None,
@@ -310,9 +391,14 @@ def top_10_driver_without_wins(driver_analysis_df):
         y=alt.Y('Races', title='Number of Races without wins'),  
         color=alt.Color('Color', scale=None), 
         tooltip=[
-            alt.Tooltip('hover_text', title='Driver'),  
-            alt.Tooltip('number_y', title='Driver Number'), 
-            alt.Tooltip('code_y', title='Code')  
+            # Group: Driver Details
+            alt.Tooltip('hover_text', title='Driver Name'),
+            alt.Tooltip('code_x', title='Code'),
+            alt.Tooltip('number_x', title='Driver Number'),
+            
+            # Group: Performance Metrics
+            alt.Tooltip('Career Wins', title='Career Wins'),
+            alt.Tooltip('Races', title='Races without win')
         ]
     ).properties(
         height=500,
@@ -456,29 +542,35 @@ def driver_analysis_page():
         """,
         unsafe_allow_html=True,
     )
-    top_10_driver_by_wins(driver_analysis_df)
+    top_10_driver_by_wins(driver_analysis_df,selected_year )
     st.markdown(
         f"""
         <hr style="border: 2px solid {'#E30613'}; margin: 30px 0;"/>
         """,
         unsafe_allow_html=True,
     )
-    top_10_driver_by_pole(driver_analysis_df)
+    top_10_driver_by_pole(driver_analysis_df, selected_year)
     st.markdown(
         f"""
         <hr style="border: 2px solid {'#E30613'}; margin: 30px 0;"/>
         """,
         unsafe_allow_html=True,
     )
-    top_10_driver_by_crashes(driver_analysis_df)
+    top_10_driver_by_crashes(driver_analysis_df, selected_year)
     st.markdown(
         f"""
         <hr style="border: 2px solid {'#E30613'}; margin: 30px 0;"/>
         """,
         unsafe_allow_html=True,
     )
-    top_10_driver_without_wins(driver_analysis_df)
-      
+    top_10_driver_without_wins(driver_analysis_df, selected_year)
+    st.markdown(
+        f"""
+        <hr style="border: 2px solid {'#E30613'}; margin: 30px 0;"/>
+        """,
+        unsafe_allow_html=True,
+    )
+    
     
 if __name__ == "__main__":
     driver_analysis_page()
