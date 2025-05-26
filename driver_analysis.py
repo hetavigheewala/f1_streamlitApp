@@ -292,7 +292,7 @@ def top_10_driver_without_wins(driver_analysis_df):
     st.markdown(
         f"""
             <div style="text-align: center; margin-left: -50px; font-size: 30px;  font-weight: bold; color: {'#E30613'};">
-            Top 10 Drivers by Without Wins
+            Top 10 Drivers with the Most Races Without a Win
             </div>
             """,
             unsafe_allow_html=True,
@@ -300,8 +300,7 @@ def top_10_driver_without_wins(driver_analysis_df):
 
     st.write(
         """
-        The Top 10 Drivers Without Wins analysis focuses on drivers with the most races but no victories, highlighting their commitment and consistency. This analysis is valuable for uncovering patterns in performance and understanding factors beyond wins, such as teamwork and strategy. It demonstrates strong analytical skills by using data to evaluate talent and identify areas for improvement in Formula 1 decision-making.
-        """
+    This analysis identifies Formula 1 drivers who have participated in the highest number of races without securing a victory. By focusing on these drivers, we can explore the dynamics of driver performance, team strategy, and the competitive nature of the sport. This analysis highlights the commitment and consistency required to maintain a career in F1, even without reaching the top step of the podium. It also underscores the importance of factors beyond individual talent, such as car performance and team support, in achieving race wins. Understanding these elements provides valuable insights into the complexities of success in Formula 1.        """
     )
     top_10_drivers_without_wins['hover_text'] =  top_10_drivers_without_wins['Name']
     chart = alt.Chart(top_10_drivers_without_wins).mark_bar().encode(
